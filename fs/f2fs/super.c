@@ -106,6 +106,7 @@ enum {
 	Opt_fault_injection,
 	Opt_lazytime,
 	Opt_nolazytime,
+	Opt_force_user,
 	Opt_err,
 };
 
@@ -140,6 +141,7 @@ static match_table_t f2fs_tokens = {
 	{Opt_fault_injection, "fault_injection=%u"},
 	{Opt_lazytime, "lazytime"},
 	{Opt_nolazytime, "nolazytime"},
+	{Opt_force_user, "force_user"},
 	{Opt_err, NULL},
 };
 
@@ -577,6 +579,9 @@ static int parse_options(struct super_block *sb, char *options)
 		case Opt_nolazytime:
 			sb->s_flags &= ~MS_LAZYTIME;
 			break;
+		case Opt_force_user:
+			set_opt(sbi, FORCE_USER);
+			break;
 		default:
 			f2fs_msg(sb, KERN_ERR,
 				"Unrecognized mount option \"%s\" or missing value",
@@ -965,6 +970,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
 	if (test_opt(sbi, FAULT_INJECTION))
 		seq_puts(seq, ",fault_injection");
 #endif
+	if (test_opt(sbi, FORCE_USER))
+		seq_puts(seq, ",force_user");
 
 	return 0;
 }
